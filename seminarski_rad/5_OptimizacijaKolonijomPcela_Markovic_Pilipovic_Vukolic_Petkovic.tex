@@ -134,8 +134,17 @@ Među najpoznatijim pčelinjim algoritmima nalazi se \textbf{BCO (engl. Bee Colo
 
 \subsection{BCO algoritam}
 \label{subsec:bco}
-Optimizacija rojem pčela je zasnovana na analogiji između prirodnog ponašanja pčela u potrazi za nektarom i ponašanja optimizacionih algoritama u potrazi za optimumom \cite{bcoalg}.
-Različite putanje koje pčele prelaze predstavljaju različita rešenja. Kod leta unazad, svaka pčela deli informaciju o kvalitetu njihovog parcijalnog/celokupnog rešenja. U algoritmu pretraživanja, do optimalnog rešenja se dolazi izračunavanjem funkcije cilja za svako parcijalno/celokupno rešenje. Opšti algoritam dat je u nastavku:
+Optimizacija rojem pčela je zasnovana na analogiji između prirodnog ponašanja pčela u potrazi za nektarom i ponašanja optimizacionih algoritama u potrazi za optimumom\cite{bcoalg}. Ova metaheuristika je zasnovana na pretraživanju populacije. 
+
+Postoje 2 osnovna pristupa BCo algoritma:
+\begin{itemize}\itemindent20pt%
+\setlength{\labelsep}{10pt}
+	\item Konstruktivni BCO - zasnovan na koracima izgradnje, gde pčele grade rešenje korak po korak
+	\item BCOi - zasnovan na poboljšanju celovitih rešenja kako bi se dobila što bolja konačna rešenja \cite{bcoalg}
+\end{itemize}
+
+Potrebno je napraviti koloniju veštačkih pčela koje bi tražile dobra rešenja problema u prostoru pretrage. Kako bi kvalitet dobijenih rešenja bio bolji, pčele sarađuju i razmenjuju informacije. Na ovaj način pčele su skoncentrisane na rešenja koja više obećavaju, te postepeno generišu i poboljšavaju pronađena rešenja (sve dok nije postignut zadati kriterijum zaustavljanja).
+Opšti algoritam dat je u nastavku:
 
 \begin{lstlisting}[caption={Pseudokod {\em BCO} algoritma \cite{algoritam} },frame=single, label=simple]
 // B - broj pcela ukljucenih u pretragu
@@ -171,6 +180,38 @@ do:
 while (nije zadovoljen kriterijum)
 \end{lstlisting}
 
+Populacija se sastoji od {\em B} veštačkih pčela. Svaka od njih zadužena je za proizvodnju jednog rešenja. Različite putanje koje pčele prelaze predstavljaju različita rešenja. Algoritam ima dve faze - \textbf{let unapred} i \textbf{let unazad}. Navedene faze dešavaju se naizmenično.
+
+Kod leta unapred, pčele pretražuju prostor pretrage. Postoji unapred definisani broj koraka koji izgrađuju i/ili poboljšavaju rešenje, koje onda postaje bolje rešenje. Zatim se započinje se s letom unazad.
+
+Kod leta unazad, svaka pčela deli informaciju o kvalitetu svog parcijalnog/celokupnog rešenja. Do optimalnog rešenja dolazi se izračunavanjem funkcije cilja za svako parcijalno/celokupno rešenje, što je analogno plesu pčela u prirodi. Nakon što su rešenja evaluirana, svaka pčela odlučuje (s određenom verovatnoćom) da li će ostati pri svom rešenju ili ne. Pčele koje su pronašle bolja rešenja imaju veće šanse da ih zadrže i reklamiraju. Za razliku od pčela u prirodi, u algoritmu - druge pčele će razmatrati rešenja kao potencijalno dobra, onih pčela koje su ostale verne svojim rešenjima. Kad god neka pčela odbaci svoje rešenje, mora da izabere jedno od reklamiranih rešenja. Pčela donosi odluku sa određenom verovatnoćom - tako da bolja rešenja imaju veće šanse da budu izabrana za naredne korake. Na ovaj način, pri svakom letu unazad, sve pčele se dele u dve grupe. Prvu grupu čine pčele regruteri {\em RE}, a drugu neopredeljene pčele {\em B - RE}. Vrednosti broja regrutera i neopredeljenih pčela se menjanju od iteracije do iteracije (jednog leta unazad do drugog leta unazad). 
+
+U narednom letu unapred, prema konstruktivnom BCO-u, svaka pčela dodaje novu komponentu na pre generisano delimično rešenje. Kod BCOi-a pčele menjaju delove celokupnog rešenja kako bi se postigla rešenja što većeg kvaliteta.
+
+Faze leta unapred i leta unazad se smenjuju {\em NC} puta, dok svaka pčela ne izgradi sopstveno rešenje ili ne uradi izmenu rešenja. {\em NC} je predstavlja parametar koji služi za definisanje učestalosti komunikacije između pčela. Kada se izvrši {\em NC} iteracija/koraka, određuje se najbolje rešenje od svih mogućih {\em B} rešenja. To rešenje se posle koristi pri ažuriranju globalno najboljeg rešenja. Ovime je iteracija algoritma gotova i brišu se svih {\em B} rešenja, te započinje nova iteracija.
+
+Sve dok kriterijum zaustavljanja nije ispunjen, vrše se iteracije. Mogući kriterijumi zaustavljanja mogu biti maksimalan/zadati broj iteracija ili maksimalan broj iteracija bez poboljšanja funkcije cilja.
+Najbolje pronađeno rešenje se daje kao konačno. To rešenje i globalno rešenje.
+
+\subsubsection{Lojalnost pčele}
+\label{subsubsec:lojalnost}
+
+Nakon završetka leta unapred, svaka pčela odlučuje da li će ostati verna prethodno pronađenom rešenju ili ne. Ova odluka zavisi od trenutnog kvaliteta rešenja pčele u odnosu na rešenja ostalih pčela. Verovatnoća da je pčela {\em i} lojalna svom prethodnom parcijalnom/celokupnom rešenju, na početku novog leta unapred, opisana je formulom:
+
+*FORMULA*
+
+Lojalnost pčele zavisi od formule (*), kao i generatora slučajnih brojeva. Ako je slučajni broj manji od izračunate vrednosti, pčela ostaje pri svom rešenju. U suprotnom, neopredeljena je.
+
+
+\subsubsection{Regrutacija}
+\label{subsubsec:regrutacija}
+
+Za svaku neopredeljenu pčelu, treba odrediti kog regruta će slediti. Pritom, uzima u obzir kvalitet reklamiranih rešenja. Verovatnoća da će i-to parcijalno/celokupno rešenje izabrati neopredeljene pčele je: \\
+
+$p_b = \frac{Q_b}{\sum_{k=1}^{RE}(Q_k)},	b = 1, 2, . . . RE$ \\
+
+Gde je {\em Qk} normalizovana vrednost funkcije cilja k-tog reklamiranog rešenja. {\em RE} je broj regrutera. Svaka neopredeljena pčela se pridružuje jednom od regrutera preko ruleta.
+
 
 \section{Primene algoritma}
 Ovaj algoritam našao je mnoge primene u inžinjerstvu:
@@ -195,7 +236,7 @@ Ovaj algoritam našao je mnoge primene u inžinjerstvu:
 \section{Zaključak}
 \label{sec:zakljucak}
 
-Ovde pišem zaključak. 
+Ovde pišete zaključak. 
 
 
 \addcontentsline{toc}{section}{Literatura}
