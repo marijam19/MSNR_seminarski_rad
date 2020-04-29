@@ -1,0 +1,40 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\usepackage[english,serbian]{babel}
+\usepackage{verbatimbox}
+
+\begin{document}
+
+%Python code highlighting
+
+\begin{verbbox}[\small\slshape]
+B-broj pčela uključenih u pretragu
+N-broj letova od košnice do cveta i nazad u jednoj BCO iteraciji
+
+Inicijalizacija: Dodelimo vrednosti promenljivama B i N, odredimo kriterijum 
+                 zaustavljanja
+
+do
+   (1)Dodeli prazno rešenje svakoj pčeli
+   (2)for(g=0; g<N; f++)
+        //let unapred
+        (a)for(i=0; i<B; i++)
+             for(j=0; j<f(N); j++)
+                (i)proceni sve moguće korake
+                (ii)izaberi naredni korak koristeći pravila ruleta
+        //let unazad
+        (b)for(i=0; i<B; i++)
+              Proceni kvalitet (parcijalnog/celokupnog) rešenja za svaku pčelu
+        (c)for(i=0; i<B; i++)
+              Odrediti lojalnost na osnovu pravila ruleta
+        (d)for(i=0; i<B; i++)
+              Za svaku pčelu kojoj nije dodeljeno rešenje, izaberi jedno na osno-
+              vu pravila ruleta
+    (3) Uporedi sva rešenja i izaberi najbolje
+while(nije zadovoljen kriterijum zaustavljanja)
+
+\end{verbbox}
+\fbox{\theverbbox}
+
+\end{document}
